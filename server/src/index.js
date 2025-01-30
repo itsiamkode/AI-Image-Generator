@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://aiimagica.vercel.app/",
-    credentials: true
+    credentials: true,
   })
 );
 app.use(express.static("public"));
@@ -48,4 +48,7 @@ connectDB().then(() => {
   app.listen(process.env.PORT || 3000, () => {
     console.log("Server is running on port " + process.env.PORT || 3000);
   });
+  app.get('/', (req, res)=>{
+    res.send("Helooooo")
+  })
 });
