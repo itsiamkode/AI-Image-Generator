@@ -8,7 +8,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://aiimagica.vercel.app/",
+    origin: "https://aiimagica.vercel.app/",
     credentials: true,
   })
 );
