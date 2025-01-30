@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-    baseURL : 'http://aiimagica-backend.vercel.app/api/',
+    baseURL : 'https://aiimagica-backend.vercel.app/api/',
 })
 
 export const GetPosts = async () => await API.get('/posts/')
