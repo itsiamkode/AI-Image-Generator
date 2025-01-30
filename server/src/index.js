@@ -6,21 +6,10 @@ import mongoose from "mongoose";
 dotenv.config();
 const app = express();
 
-// ✅ Dynamic CORS Configuration
-const allowedOrigins = [
-  "https://aiimagica.vercel.app", // ✅ Production Frontend
-  "http://localhost:5173", // ✅ Dev Frontend (Vite Default)
-];
-
+// ✅ Fix CORS
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "http://localhost:5173", // No trailing slash
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -29,7 +18,7 @@ app.use(
 
 // ✅ Manually Set Headers for Vercel Serverless Functions
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
@@ -49,7 +38,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "HELLO MUZZ!!!" });
 });
 
-// ✅ Connect to MongoDB
+// Connect to MongoDB
 const connectDB = async () => {
   mongoose.set("strictQuery", true);
   try {
@@ -60,12 +49,10 @@ const connectDB = async () => {
   }
 };
 
-// ✅ Start Server Based on `NODE_ENV`
-if (process.env.NODE_ENV !== "production") {
-  connectDB().then(() => {
-    app.listen(8080, () => console.log("Server running on port 8080"));
-  });
-}
+// ✅ Start Express Server (without NODE_ENV check)
+connectDB().then(() => {
+  app.listen(8080, () => console.log("Server running on port 8080"));
+});
 
 // ✅ Export app for Vercel Deployment
 export default app;
