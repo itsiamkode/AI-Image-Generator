@@ -6,7 +6,11 @@ import mongoose from "mongoose";
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://aiimagica.vercel.app",
+  })
+);
 app.use(express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -21,11 +25,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-
 import PostRouter from "./routes/PostsRoutes.js";
-app.use('/api/posts', PostRouter)
+app.use("/api/posts", PostRouter);
 import GenerateImageRouter from "./routes/GenerateImageRoute.js";
-app.use('/api/generateImage', GenerateImageRouter)
+app.use("/api/generateImage", GenerateImageRouter);
 app.get("/", async (req, res) => {
   res.status(200).json({
     message: "HELLO MUZZ!!!",
