@@ -2,8 +2,8 @@ import { Router } from "express";
 import { createPost, getAllPosts } from "../controller/PostsController.js";
 
 const router = Router()
-router.get('/testing', ()=>{
-    console.log('Helllllooo World')
+router.get('/testing', (req, res)=>{
+    res.send('Helllllooo World')
 })
 router.get('/', getAllPosts)
 router.post('/', createPost)
