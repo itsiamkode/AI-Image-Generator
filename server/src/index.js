@@ -6,53 +6,46 @@ import mongoose from "mongoose";
 dotenv.config();
 const app = express();
 
-// ✅ Fix CORS
 app.use(
   cors({
-    origin: "http://localhost:5173", // No trailing slash
+    origin: "http://aiimagica.vercel.app/",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-// ✅ Manually Set Headers for Vercel Serverless Functions
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-
+app.use(express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-import PostRouter from "./routes/PostsRoutes.js";
-import GenerateImageRouter from "./routes/GenerateImageRoute.js";
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong!";
+  return res.status(status).json({
+    success: false,
+    status,
+    message,
+  });
+});
 
+import PostRouter from "./routes/PostsRoutes.js";
 app.use("/api/posts", PostRouter);
+import GenerateImageRouter from "./routes/GenerateImageRoute.js";
 app.use("/api/generateImage", GenerateImageRouter);
 
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "HELLO MUZZ!!!" });
-});
-
-// Connect to MongoDB
 const connectDB = async () => {
   mongoose.set("strictQuery", true);
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Database Connected!!!!");
-  } catch (error) {
-    console.error("Error Failed to Connect", error);
-  }
+  mongoose
+    .connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log("Database Connected!!!!");
+    })
+    .catch((error) => {
+      console.error("Error Failed to Connect");
+      console.log(error);
+    });
 };
 
-// ✅ Start Express Server (without NODE_ENV check)
 connectDB().then(() => {
-  app.listen(8080, () => console.log("Server running on port 8080"));
+  app.listen(process.env.PORT || 3000, () => {
+    console.log("Server is running on port " + process.env.PORT || 3000);
+  });
 });
-
-// ✅ Export app for Vercel Deployment
-export default app;
