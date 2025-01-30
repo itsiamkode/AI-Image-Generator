@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@theme{
+    --breakpoint-xxs: 240px
+}
+*{
+  background-color: #010113;
+}
+.font-poppins{
+    font-family: 'Poppins', sans-serif;
+}
+
+.custom-gradient{
+    background: rgb(88,132,208);
+    background: linear-gradient(144deg, rgba(88,132,208,1) 1%, rgba(88,64,195,1) 59%);
+}
+.masonry-grid {
+  display: block; /* Masonry.js handles layout */
+  margin-left: -10px; /* Fix gutter spacing */
+  width: auto;
+}
+
+.masonry-sizer {
+  width: 30%; /* Forces at least 3 images per row */
+}
+
+.masonry-item {
+  width: 30%; /* Same as masonry-sizer */
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .masonry-sizer,
+  .masonry-item {
+    width: 45%; /* 2 columns on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-sizer,
+  .masonry-item {
+    width: 100%; /* 1 column for mobile */
+  }
+}
