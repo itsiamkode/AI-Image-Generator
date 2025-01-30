@@ -9,14 +9,14 @@ const app = express();
 // ✅ Fix CORS
 app.use(
   cors({
-    origin: "https://aiimagica.vercel.app", // Remove trailing slash
+    origin: "https://aiimagica.vercel.app", // No trailing slash
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// ✅ Manually Set Headers for Serverless
+// ✅ Manually Set Headers for Vercel Serverless Functions
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://aiimagica.vercel.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -49,12 +49,10 @@ const connectDB = async () => {
   }
 };
 
-// Start Server (Only for Local Development)
-if (process.env.NODE_ENV !== "production") {
-  connectDB().then(() => {
-    app.listen(8080, () => console.log("Server running on port 8080"));
-  });
-}
+// ✅ Start Express Server (without NODE_ENV check)
+connectDB().then(() => {
+  app.listen(8080, () => console.log("Server running on port 8080"));
+});
 
-// ✅ Export app for Vercel Serverless Deployment
+// ✅ Export app for Vercel Deployment
 export default app;
