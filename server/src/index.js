@@ -8,16 +8,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://aiimagica.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "http://aiimagica.vercel.app/",
+    credentials: true
   })
 );
 app.use(express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || "Something went wrong!";
@@ -28,33 +26,26 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Routes
 import PostRouter from "./routes/PostsRoutes.js";
-import GenerateImageRouter from "./routes/GenerateImageRoute.js";
-
 app.use("/api/posts", PostRouter);
+import GenerateImageRouter from "./routes/GenerateImageRoute.js";
 app.use("/api/generateImage", GenerateImageRouter);
 
-// Root route
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "HELLO MUZZ!!!",
-  });
-});
-
-// Connect to MongoDB
 const connectDB = async () => {
   mongoose.set("strictQuery", true);
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Database Connected!!!!");
-  } catch (error) {
-    console.error("Error Failed to Connect", error);
-  }
+  mongoose
+    .connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log("Database Connected!!!!");
+    })
+    .catch((error) => {
+      console.error("Error Failed to Connect");
+      console.log(error);
+    });
 };
 
-// Connect to DB before handling requests
-connectDB();
-
-// ✅ Export app instead of `app.listen()`
-export default app;
+connectDB().then(() => {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log("Server is running on port " + process.env.PORT || 3000);
+  });
+});
