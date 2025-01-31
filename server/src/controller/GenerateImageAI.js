@@ -7,6 +7,7 @@ const API_KEY =
 export const generateImage = async (req, res, next) => {
   try {
     const { prompt } = req.body;
+    if (!prompt) return next(createError(420, "Prompt is required"));
     const formData = new FormData();
     formData.append("prompt", prompt);
 
