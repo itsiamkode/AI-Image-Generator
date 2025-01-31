@@ -5,17 +5,20 @@ import { useNavigate } from 'react-router-dom'
 import PostLoading from './PostLoading'
 import { CreatePost, GenerateImage } from '../api/index'
 export default function GenerateImagePrompt() {
-    const { post, setPost, setLoading, loading, postLoading, setPostLoading } = useContext(ContextApi)
+    const { post, setPost, setLoading, loading, postLoading, setPostLoading, setImageGeneratorLoading } = useContext(ContextApi)
     const navigate = useNavigate()
     const [error, setError] = useState('')
     const handleGenerateImage = async () => {
         setLoading(true)
+        setImageGeneratorLoading(true)
         await GenerateImage({ prompt: post.prompt }).then((res) => {
             setPost({ ...post, image: res.data.image })
             setLoading(false)
+            setImageGeneratorLoading(false)
         }).catch((err) => {
             setError(err?.response?.data?.message)
             setLoading(false)
+            setImageGeneratorLoading(false)
         })
     }
     const handleCreatePost = async () => {
