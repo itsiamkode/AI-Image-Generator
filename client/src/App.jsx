@@ -26,7 +26,6 @@ export default function App() {
       await GetPosts().then((res) => {
         setAllPosts(res?.data?.data)
         setInitialLoading(false)
-        console.log(res)
       })
     } catch (error) {
       setInitialLoading(false)
