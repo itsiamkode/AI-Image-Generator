@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'http://aiimagica.vercel.app/api',  // Use relative path, Vercel handles the routing
+  baseURL: 'https://aiimagica.vercel.app/api',  // Use relative path, Vercel handles the routing
 });
 
 export const GetPosts = async () => await API.get('/posts/');
